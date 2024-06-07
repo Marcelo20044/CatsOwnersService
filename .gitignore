@@ -1,0 +1,9 @@
+# Project exclude paths
+/authentication/target/
+/cat/target/
+/contract/target/
+/infrastructure/target/
+/kafka/target/
+/owner/target/
+/presentation/target/
+/security/target/
