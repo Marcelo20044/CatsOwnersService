@@ -22,4 +22,6 @@ public interface OwnerService {
     void delete(Long id);
 
     CatDto createCat(CatDto cat, Long ownerId);
+
+    Boolean validateId(Long id, String username);
 }

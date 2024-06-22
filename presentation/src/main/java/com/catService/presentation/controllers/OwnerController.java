@@ -9,6 +9,7 @@ import com.catService.contract.dto.owner.UpdateOwnerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.catService.kafka.services.KafkaService;
 
@@ -43,6 +44,7 @@ public class OwnerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') or @ownerController.validateId(#id, authentication.name)")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateOwnerDto ownerDto) {
         if (!id.equals(ownerDto.id())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         kafkaService.sendAsync(ownerCommandMapper.updateOwner(ownerDto), TOPIC);
@@ -50,12 +52,14 @@ public class OwnerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') or @ownerController.validateId(#id, authentication.name)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         kafkaService.sendAsync(commonCommandMapper.deleteById(id), TOPIC);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{ownerId}/cat")
+    @PreAuthorize("hasAnyRole('ADMIN') or @ownerController.validateId(#ownerId, authentication.name)")
     public ResponseEntity<CatDto> createCat(@RequestBody CatDto catDto, @PathVariable Long ownerId) {
         CatDto cat = kafkaService.sendSync(
                 ownerCommandMapper.createCat(catDto, ownerId), 
@@ -63,5 +67,12 @@ public class OwnerController {
                 CatDto.class
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(cat);
+    }
+
+    public Boolean validateId(Long id, String username) {
+        return kafkaService.sendSync(
+                ownerCommandMapper.validateId(id, username),
+                TOPIC,
+                Boolean.class);
     }
 }

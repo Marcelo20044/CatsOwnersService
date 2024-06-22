@@ -89,4 +89,11 @@ public class OwnerServiceImpl implements OwnerService {
                 CatDto.class
         );
     }
+
+    @Override
+    public Boolean validateId(Long id, String username) {
+        Owner owner = ownerRepository.findByUsername(username).orElseThrow(
+                () -> new OwnerNotExistException(String.format("Хозяина %s не существует", username)));
+        return owner.getId().equals(id);
+    }
 }

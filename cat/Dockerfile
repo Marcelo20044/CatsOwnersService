@@ -6,5 +6,5 @@ RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 FROM ubuntu/jre:8-22.04_edge
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
-EXPOSE 8192
+EXPOSE 8190
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]

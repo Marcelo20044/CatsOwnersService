@@ -57,6 +57,7 @@ public class CatController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') or @catController.isCatOwnedBy(#id, authentication.name)")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody CatDto catDto) {
         if (!id.equals(catDto.id())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         kafkaService.sendAsync(catCommandMapper.updateCat(catDto), TOPIC);
@@ -64,12 +65,14 @@ public class CatController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') or @catController.isCatOwnedBy(#id, authentication.name)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         kafkaService.sendAsync(commonCommandMapper.deleteById(id), TOPIC);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/createFriend/{id}/{friendId}")
+    @PreAuthorize("hasAnyRole('ADMIN') or @catController.isCatOwnedBy(#id, authentication.name)")
     public ResponseEntity<Void> createFriend(@PathVariable Long id, @PathVariable Long friendId) {
         kafkaService.sendAsync(catCommandMapper.createCatFriend(id, friendId), TOPIC);
         return new ResponseEntity<>(HttpStatus.CREATED);

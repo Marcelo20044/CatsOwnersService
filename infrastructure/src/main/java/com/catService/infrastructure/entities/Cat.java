@@ -49,6 +49,13 @@ public class Cat {
     @JsonIgnore
     private Set<Cat> friends = new HashSet<>();
 
+    @PreRemove
+    private void removeFriends() {
+        for (Cat friend : friends) {
+            friend.getFriends().remove(this);
+        }
+    }
+
     public Cat(Long id, String name, LocalDate birthDate, String breed, Color color) {
         this.id = id;
         this.name = name;

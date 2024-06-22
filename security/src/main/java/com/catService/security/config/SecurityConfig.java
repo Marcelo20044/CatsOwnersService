@@ -37,7 +37,6 @@ public class SecurityConfig {
                         .requestMatchers("/cat/**").authenticated()
                         .requestMatchers("/owner/**").authenticated()
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/registration").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))

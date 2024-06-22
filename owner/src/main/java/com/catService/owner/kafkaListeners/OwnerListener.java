@@ -9,6 +9,7 @@ import com.catService.contract.commands.owner.IsCatOwnedBy;
 import com.catService.contract.commands.owner.UpdateOwner;
 import com.catService.contract.dto.cat.CatDto;
 import com.catService.contract.dto.owner.OwnerDto;
+import com.catService.contract.dto.owner.ValidateId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -62,5 +63,11 @@ public class OwnerListener {
     @SendTo
     public CatDto createCat(CreateCat command) {
         return ownerService.createCat(command.catDto(), command.ownerId());
+    }
+
+    @KafkaHandler
+    @SendTo
+    public Boolean validateId(ValidateId command) {
+        return ownerService.validateId(command.id(), command.username());
     }
 }

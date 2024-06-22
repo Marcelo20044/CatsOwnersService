@@ -5,6 +5,7 @@ import com.catService.contract.commands.owner.IsCatOwnedBy;
 import com.catService.contract.commands.owner.UpdateOwner;
 import com.catService.contract.dto.cat.CatDto;
 import com.catService.contract.dto.owner.UpdateOwnerDto;
+import com.catService.contract.dto.owner.ValidateId;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,5 +20,9 @@ public class OwnerCommandMapper {
 
     public CreateCat createCat(CatDto catDto, Long ownerId) {
         return new CreateCat(catDto, ownerId);
+    }
+
+    public ValidateId validateId(Long id, String username) {
+        return new ValidateId(id, username);
     }
 }
